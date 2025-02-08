@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Basic Auto")
+@Autonomous(name="ParkRR")
 public class BasicAuto extends LinearOpMode {
 
     public class ScoringClaw{
@@ -74,7 +74,10 @@ public class BasicAuto extends LinearOpMode {
 
         if (isStopRequested())return;
 
-        Actions.runBlocking(park.build());
+        Actions.runBlocking( new ParallelAction(
+                park.build(),
+                scoringClaw.open()
+        ));
 
     }
 }
