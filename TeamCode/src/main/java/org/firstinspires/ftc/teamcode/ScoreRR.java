@@ -110,9 +110,10 @@ public class ScoreRR extends LinearOpMode {
     }
 
     public class Arm {
-        private DcMotor arm;
+        private DcMotorEx arm;
         public Arm(HardwareMap hardwareMap){
-            arm = hardwareMap.get(DcMotor.class, "Arm");
+            arm = (DcMotorEx) hardwareMap.get(DcMotor.class, "Arm");
+            arm.setTargetPositionTolerance(35);
         }
 
         public class ArmUp implements Action {
@@ -170,7 +171,7 @@ public class ScoreRR extends LinearOpMode {
                         .strafeTo(new Vector2d(-53, -32));
 
         TrajectoryActionBuilder score = two.endTrajectory().fresh()
-                        .strafeTo(new Vector2d (-53,-56 ))
+                        .strafeTo(new Vector2d (-55,-56 ))
                                 .turnTo(Math.toRadians(40));
 
         TrajectoryActionBuilder three = score.endTrajectory().fresh()
@@ -178,7 +179,7 @@ public class ScoreRR extends LinearOpMode {
                                 .strafeTo(new Vector2d(-63, -32));
 
         TrajectoryActionBuilder threesco = three.endTrajectory().fresh()
-                .strafeTo(new Vector2d (-53,-56 ))
+                .strafeTo(new Vector2d (-55,-56 ))
                 .turnTo(Math.toRadians(40));
 
 
