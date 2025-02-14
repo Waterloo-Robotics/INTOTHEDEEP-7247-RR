@@ -262,7 +262,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
                 Slide.setTargetPosition(-900);
                 Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     Slide.setPower(.8);
-                Claw.setPosition(1);
+                Claw.setPosition(-1);
 
                 }
 //
