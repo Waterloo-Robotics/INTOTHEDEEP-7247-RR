@@ -87,7 +87,7 @@ public class ScoreRR extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 slide.setTargetPosition(-1500);
                 slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide.setPower(.5);
+                slide.setPower(.6);
                 return slide.isBusy();
             }
         }
@@ -100,7 +100,7 @@ public class ScoreRR extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 slide.setTargetPosition(0);
                 slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide.setPower(.5);
+                slide.setPower(.6);
                 return slide.isBusy();
             }
         }
@@ -121,7 +121,7 @@ public class ScoreRR extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 arm.setTargetPosition(-2554);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.setPower(.5);
+                arm.setPower(.8);
                 return arm.isBusy();
             }
         }
@@ -134,7 +134,7 @@ public class ScoreRR extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 arm.setTargetPosition(0);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.setPower(.5);
+                arm.setPower(.8);
                 return arm.isBusy();
             }
         }
@@ -170,9 +170,12 @@ public class ScoreRR extends LinearOpMode {
         TrajectoryActionBuilder two = turn.endTrajectory().fresh()
                         .strafeTo(new Vector2d(-53, -32));
 
+
+
         TrajectoryActionBuilder score = two.endTrajectory().fresh()
-                        .strafeTo(new Vector2d (-55,-56 ))
-                                .turnTo(Math.toRadians(40));
+                .strafeTo(new Vector2d (-55,-56 ))
+                .turnTo(Math.toRadians(40));
+
 
         TrajectoryActionBuilder three = score.endTrajectory().fresh()
                         .turnTo(Math.toRadians(90))
