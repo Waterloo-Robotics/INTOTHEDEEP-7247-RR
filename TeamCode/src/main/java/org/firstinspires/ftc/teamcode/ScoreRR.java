@@ -78,20 +78,22 @@ public class ScoreRR extends LinearOpMode {
     }
     public class Slide {
         private DcMotor slide;
-        public Slide(HardwareMap hardwareMap){
+
+        public Slide(HardwareMap hardwareMap) {
             slide = hardwareMap.get(DcMotor.class, "Slide");
         }
 
         public class Basket implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                slide.setTargetPosition(-1500);
+                slide.setTargetPosition(-1400);
                 slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide.setPower(.6);
                 return slide.isBusy();
             }
         }
-        public Action Basket () {
+
+        public Action Basket() {
             return new ScoreRR.Slide.Basket();
         }
 
@@ -104,11 +106,24 @@ public class ScoreRR extends LinearOpMode {
                 return slide.isBusy();
             }
         }
+
         public Action Retract() {
             return new ScoreRR.Slide.Retract();
         }
-    }
 
+        public class Mid implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                slide.setTargetPosition(-650);
+                slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide.setPower(.6);
+                return slide.isBusy();
+            }
+        }
+        public Action Mid() {
+            return new ScoreRR.Slide.Mid();
+        }
+    }
     public class Arm {
         private DcMotorEx arm;
         public Arm(HardwareMap hardwareMap){
@@ -141,7 +156,34 @@ public class ScoreRR extends LinearOpMode {
         public Action ArmDown() {
             return new ScoreRR.Arm.ArmDown();
         }
+
+        public class ArmHold  implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm.setTargetPosition(-0);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(.3);
+                return arm.isBusy();
+            }}
+        public Action ArmHold() {
+            return new ScoreRR.Arm.ArmHold();
+        }
+
+        public class Armbit  implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm.setTargetPosition(-750);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(.3);
+                return arm.isBusy();
+            }}
+        public Action Armbit() {
+            return new ScoreRR.Arm.Armbit();
+        }
     }
+
 
     @Override
     public void runOpMode(){
@@ -149,7 +191,7 @@ public class ScoreRR extends LinearOpMode {
 //        -18
          *  Y+ is away from you
          *  0 Heading is towards back of field */
-        Pose2d startpose = new Pose2d(-18, -63.5, Math.toRadians(0));
+        Pose2d startpose = new Pose2d(-46.5, -63.5, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startpose);
         ScoringClaw scoringClaw = new ScoringClaw(hardwareMap);
         Slide slide = new Slide(hardwareMap);
@@ -157,33 +199,40 @@ public class ScoreRR extends LinearOpMode {
         Wrist wrist = new Wrist(hardwareMap);
 
         TrajectoryActionBuilder park = drive.actionBuilder(startpose)
-                .strafeTo(new Vector2d(-48, -63.5))
-                .waitSeconds(1);
-
-        TrajectoryActionBuilder shift = park.endTrajectory().fresh()
-                        .turnTo(Math.toRadians(15));
+//                .strafeTo(new Vector2d(-48, -63.5))
+                .strafeToLinearHeading(new Vector2d(-54, -63.5), Math.toRadians(15));
 
 
-        TrajectoryActionBuilder turn =shift.endTrajectory().fresh()
-                .turnTo(Math.toRadians(90));
+//        TrajectoryActionBuilder shift = park.endTrajectory().fresh()
+//                        .turnTo(Math.toRadians(15));
 
-        TrajectoryActionBuilder two = turn.endTrajectory().fresh()
-                        .strafeTo(new Vector2d(-53, -32));
+
+//        TrajectoryActionBuilder turn =park.endTrajectory().fresh()
+//                .turnTo(Math.toRadians(90));
+
+        TrajectoryActionBuilder two = park.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-60, -32), Math.toRadians(90));
 
 
 
         TrajectoryActionBuilder score = two.endTrajectory().fresh()
-                .strafeTo(new Vector2d (-55,-56 ))
-                .turnTo(Math.toRadians(40));
+                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+
 
 
         TrajectoryActionBuilder three = score.endTrajectory().fresh()
-                        .turnTo(Math.toRadians(90))
-                                .strafeTo(new Vector2d(-63, -32));
+                .strafeToLinearHeading(new Vector2d(-70, -32), Math.toRadians(90));
 
         TrajectoryActionBuilder threesco = three.endTrajectory().fresh()
-                .strafeTo(new Vector2d (-55,-56 ))
-                .turnTo(Math.toRadians(40));
+                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+
+        TrajectoryActionBuilder Boom = threesco.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-74, -38), Math.toRadians(123));
+
+        TrajectoryActionBuilder YASSS = Boom.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+
+
 
 
 
@@ -208,36 +257,35 @@ public class ScoreRR extends LinearOpMode {
                 slide.Basket(),
                 wrist.Score()
         ));
-        Actions.runBlocking(new SequentialAction(
-                shift.build()
-                ));
 
-        Actions.runBlocking(new SequentialAction(
+        sleep(500);
+        Actions.runBlocking(new ParallelAction(
                 scoringClaw.Open(),
                 wrist.Pickup(),
                 slide.Retract(),
                 arm.ArmDown()
 
         ));
-        Actions.runBlocking(new SequentialAction(
-                turn.build()
-        ));
+
 
         Actions.runBlocking(new SequentialAction(
                 two.build(),
                 scoringClaw.close()));
 
-
-        sleep(500);
-
         Actions.runBlocking(new SequentialAction(
-                score.build(),
+                score.build()));
+
+        Actions.runBlocking(new ParallelAction(
                 slide.Basket(),
                 arm.ArmUp(),
                 wrist.Score()));
-        sleep(1000);
+        sleep(250);
+
+        Actions.runBlocking(new SequentialAction(
+                scoringClaw.Open()
+        ));
+        sleep(250);
         Actions.runBlocking(new ParallelAction(
-                scoringClaw.Open(),
                 wrist.Pickup(),
                 slide.Retract(),
                 arm.ArmDown()));
@@ -245,21 +293,58 @@ public class ScoreRR extends LinearOpMode {
                 three.build(),
                 scoringClaw.close()));
 
-
         Actions.runBlocking(new SequentialAction(
-                threesco.build(),
+                threesco.build()));
+
+        Actions.runBlocking(new ParallelAction(
                 slide.Basket(),
                 arm.ArmUp(),
                 wrist.Score()
                 ));
+        sleep(250);
+Actions.runBlocking(new SequentialAction(
+        scoringClaw.Open()
+));
 
-        sleep(1000);
+        sleep(250);
         Actions.runBlocking(new ParallelAction(
-                scoringClaw.Open(),
                 wrist.Pickup(),
+                slide.Retract()
+        ));
+
+        Actions.runBlocking(new ParallelAction(
+                Boom.build()
+        ));
+
+        Actions.runBlocking(new ParallelAction(
+                arm.ArmHold(),
+                slide.Mid()
+        ));
+
+        Actions.runBlocking(new SequentialAction(
+                scoringClaw.close(),
+               arm.Armbit(),
+               YASSS.build()
+        ));
+
+        Actions.runBlocking(new ParallelAction(
+                slide.Basket(),
+                arm.ArmUp(),
+                wrist.Score()));
+        sleep(250);
+        Actions.runBlocking(new SequentialAction(
+                scoringClaw.Open()
+        ));
+
+        Actions.runBlocking(new ParallelAction(
+               wrist.Pickup(),
                 slide.Retract(),
                 arm.ArmDown()
 
         ));
+
+
+
+
     }
 }
