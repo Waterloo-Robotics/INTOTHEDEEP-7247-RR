@@ -68,7 +68,7 @@ public class ScoreRR extends LinearOpMode {
         public class Pickup implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                wrist.setPosition(1);
+                wrist.setPosition(.5);
                 return false;
             }
         }
@@ -134,7 +134,7 @@ public class ScoreRR extends LinearOpMode {
         public class ArmUp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                arm.setTargetPosition(-2554);
+                arm.setTargetPosition(-2504);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 arm.setPower(.8);
                 return arm.isBusy();
@@ -211,7 +211,7 @@ public class ScoreRR extends LinearOpMode {
 //                .turnTo(Math.toRadians(90));
 
         TrajectoryActionBuilder two = park.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-60, -32), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-59, -32), Math.toRadians(90));
 
 
 
@@ -221,13 +221,13 @@ public class ScoreRR extends LinearOpMode {
 
 
         TrajectoryActionBuilder three = score.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-70, -32), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-69, -32), Math.toRadians(90));
 
         TrajectoryActionBuilder threesco = three.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
 
         TrajectoryActionBuilder Boom = threesco.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-74, -38), Math.toRadians(123));
+                .strafeToLinearHeading(new Vector2d(-73, -38), Math.toRadians(123));
 
         TrajectoryActionBuilder YASSS = Boom.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));

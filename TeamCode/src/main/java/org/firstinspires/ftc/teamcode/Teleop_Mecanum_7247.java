@@ -87,6 +87,9 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
     private Servo Claw = null;
     private Servo Wrist = null;
 
+    private Servo WRotate = null;
+
+
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 4.1 ;     // For figuring circumference
@@ -116,6 +119,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
         Claw = hardwareMap.get(Servo.class, "Claw");
         Wrist = hardwareMap.get(Servo.class, "Wrist");
         Slide = hardwareMap.get(DcMotor.class, "Slide");
+        WRotate = hardwareMap.get(Servo.class, "WRotate");
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -160,7 +164,8 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
             boolean Score = gamepad2.dpad_up;
             boolean PickUp = gamepad2.dpad_down;
             boolean Retract = gamepad2.dpad_left;
-            boolean Lowscore = gamepad2.dpad_right;
+            boolean VerticalR = gamepad2.x;
+            boolean HorizontalR = gamepad2.y;
 
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -220,15 +225,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
             Arm.setPower(1);
             Arm.setTargetPosition( (int)new_target);
 
-//            if (Arm_power < 0 && Arm.getCurrentPosition() < -2700) {
-//
-//                Arm.setPower(0);
-//
-//            } else {
-//
-//                Arm.setPower(Arm_power);
-//
-//            }
+
 
             // 1. Do we know where the slide is?
             // Yes. -> Do normal controls
@@ -296,7 +293,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
 
 
             if (WristFlat) {
-                Wrist.setPosition(1);
+                Wrist.setPosition(.5);
             }
 
             if (ClawClose) {
@@ -305,6 +302,14 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
 
             if (ClawOpen) {
                 Claw.setPosition(-1);
+            }
+
+            if (VerticalR) {
+                WRotate.setPosition(.35);
+            }
+
+            if (HorizontalR) {
+                WRotate.setPosition(0);
             }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Slide Power", "%4.2f", Slide.getPower());
@@ -315,6 +320,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
             telemetry.addData("Slide Position", Slide.getCurrentPosition());
             telemetry.addData("Arm Position",  Arm.getCurrentPosition());
             telemetry.addData("Arm Target Position", Arm.getTargetPosition());
+            telemetry.addData("WristR Position", WRotate.getPosition());
             telemetry.update();
 
 
