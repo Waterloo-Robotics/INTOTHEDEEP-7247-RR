@@ -184,6 +184,26 @@ public class ScoreRR extends LinearOpMode {
         }
     }
 
+    public class WRotation {
+        private Servo WRotate;
+        public WRotation(HardwareMap hardwareMap){
+                WRotate = hardwareMap.get(Servo.class, "WRotate");
+            }
+
+
+        public class Lock implements Action {
+            public boolean run(@NonNull TelemetryPacket packet) {
+                WRotate.setPosition(0);
+               return false;
+            }
+
+        }
+
+        public Action Lock() {
+            return new ScoreRR.WRotation.Lock();
+        }
+    }
+
 
     @Override
     public void runOpMode(){
@@ -191,12 +211,13 @@ public class ScoreRR extends LinearOpMode {
 //        -18
          *  Y+ is away from you
          *  0 Heading is towards back of field */
-        Pose2d startpose = new Pose2d(-46.5, -63.5, Math.toRadians(0));
+        Pose2d startpose = new Pose2d(-46.75, -63.5, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startpose);
         ScoringClaw scoringClaw = new ScoringClaw(hardwareMap);
         Slide slide = new Slide(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
+        WRotation WRotate =  new WRotation (hardwareMap);
 
         TrajectoryActionBuilder park = drive.actionBuilder(startpose)
 //                .strafeTo(new Vector2d(-48, -63.5))
@@ -216,7 +237,7 @@ public class ScoreRR extends LinearOpMode {
 
 
         TrajectoryActionBuilder score = two.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+                .strafeToLinearHeading(new Vector2d(-60, -52), Math.toRadians(40));
 
 
 
@@ -224,20 +245,22 @@ public class ScoreRR extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-69, -32), Math.toRadians(90));
 
         TrajectoryActionBuilder threesco = three.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+                .strafeToLinearHeading(new Vector2d(-60, -52), Math.toRadians(40));
 
         TrajectoryActionBuilder Boom = threesco.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-73, -38), Math.toRadians(123));
 
         TrajectoryActionBuilder YASSS = Boom.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-60, -56), Math.toRadians(40));
+                .strafeToLinearHeading(new Vector2d(-60, -52), Math.toRadians(40));
 
 
 
 
 
         Actions.runBlocking(new ParallelAction(
-                scoringClaw.close()
+                scoringClaw.close(),
+                WRotate.Lock()
+
         ));
 
 

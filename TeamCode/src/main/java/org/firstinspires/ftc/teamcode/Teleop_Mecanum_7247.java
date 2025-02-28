@@ -215,8 +215,8 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
 
             new_target = (int)(Arm.getCurrentPosition() + Arm_power * 300);
 
-            if (new_target < -2700) {
-                new_target = -2700;
+            if (new_target < -2555) {
+                new_target = -2555;
             }
 
             if (new_target > 0) {
@@ -255,7 +255,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
 
             }
 
-            if(PickUp && Arm.getCurrentPosition() < -580) {
+            if(PickUp && Arm.getCurrentPosition() < -44) {
                 Slide.setTargetPosition(-900);
                 Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     Slide.setPower(.8);
@@ -264,7 +264,7 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
                 }
 //
 //
-             if(Score && Arm.getCurrentPosition() < -875) {
+             if(Score && Arm.getCurrentPosition() < -103) {
                  Slide.setTargetPosition(-1500);
                 Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Slide.setPower(.8);
@@ -281,14 +281,14 @@ public class Teleop_Mecanum_7247 extends LinearOpMode {
 //                }
 //            }
              if(Retract) {
-                 Wrist.setPosition(1);
+                 Wrist.setPosition(.5);
                 Slide.setTargetPosition(0);
                 Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     Slide.setPower(.8);
                 }
 //
             if (WristPickUp) {
-                Wrist.setPosition(0);
+                Wrist.setPosition(-.5);
             }
 
 
